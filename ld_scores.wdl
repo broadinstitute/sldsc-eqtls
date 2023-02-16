@@ -10,10 +10,7 @@ workflow calculate_ldscores {
     String plink_directory
     String plink_path = sub(plink_directory, "[/\\s]+$", "") + "/"
 
-    Array[Int] chroms = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]
-
-    # Array[File] annot_files # ex. snps.${i}.annot.gz 
-    # String annot_prefix="snps"
+    Array[String] chroms = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22"]
   } 
 
   scatter (chrom in chroms){
@@ -21,41 +18,28 @@ workflow calculate_ldscores {
     call calculate_ldscore {
         input:
         annot_file=annot_file,
-        annot_basename="snps.", 
-        chrom='~{chrom}',
+        chrom=chrom,
         plink_path=plink_path,
     }
   }
 }
-  # output {
-  #   Array[File] ldscore_files=glob("${prefix}.*.l2.ldscore.gz")
-  #   Array[File] m_files=glob("${prefix}.*.l2.M")
-  #   Array[File] m_5_50_files=glob("${prefix}.*.l2.M_5_50")
-  #   Array[File] log_files=glob("${prefix}.*.log")
-  # }
 
 
 task calculate_ldscore {
   input {
     
     File annot_file 
-    String annot_basename #=basename(annot_file, ".annot.gz")
-    String chrom=1 #=sub(annot_basename, "snps.", "")
+    String chrom="1" #=sub(annot_basename, "snps.", "")
 
-    File plink_path="gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_EUR_Phase3_plink/"
+    String plink_path="gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_EUR_Phase3_plink/"
     String plink_prefix=plink_path + '1000G.EUR.QC.'
-    File plink_bed="~{plink_prefix + chrom + '.bed'}"
-    File plink_bim="~{plink_prefix + chrom + '.bim'}"
-    File plink_fam="~{plink_prefix + chrom + '.fam'}"
+    File plink_bed=select_first(["~{plink_prefix + chrom + '.bed'}","gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_EUR_Phase3_plink/1000G.EUR.QC.1.bed"])
+    File plink_bim=select_first(["~{plink_prefix + chrom + '.bim'}","gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_EUR_Phase3_plink/1000G.EUR.QC.1.bim"])
+    File plink_fam=select_first(["~{plink_prefix + chrom + '.fam'}","gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_EUR_Phase3_plink/1000G.EUR.QC.1.fam"])
     File snps_file="gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/snplist.hm3.txt"
 
     String docker_image='docker.io/lifebitai/ldsc-pipe:latest'
     String ldsc_path='/ldsc'
-
-    # Int memory=128
-    # Int disk_space=128
-    # Int num_threads=24
-    # Int num_preempt=0
   }
   command {
     set -euo pipefail
@@ -73,10 +57,6 @@ task calculate_ldscore {
 
   runtime {
     docker: docker_image
-    # memory: "${memory}GB"
-    # disks: "local-disk ${disk_space} HDD"
-    # cpu: "${num_threads}"
-    # preemptible: "${num_preempt}"
   }
 
   output {
@@ -85,5 +65,4 @@ task calculate_ldscore {
     File m_5_50_file="snps.${chrom}.l2.M_5_50"
     File log_file="snps.${chrom}.log"
   }
-
 }
