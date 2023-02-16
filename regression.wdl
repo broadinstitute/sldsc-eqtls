@@ -5,14 +5,21 @@ version 1.0
 workflow regressions {
   input {
     String annot_directory # annot_files should be called snps.${chrom}.annot.gz
+    String annot_path = sub(annot_directory, "[/\\s]+$", "") + "/"
+
+    String gwas_directory
+    String annot_path = sub(annot_directory, "[/\\s]+$", "") + "/"
+
     Array[String] gwas_names
   } 
 
   scatter (gwas_name in gwas_names){
+    File gwas_sumstats_file = gwas_directory + gwas_name + ".sumstats.gz"
     call regression {
       input:
-      annot_directory=annot_directory,
+      annot_path=annot_path,
       gwas_name=gwas_name,
+      gwas_sumstats_file=gwas_sumstats_file,
     }
   }
 }
@@ -20,9 +27,8 @@ workflow regressions {
 
 task regression {
   input {
-    String annot_directory # annot_files should be called snps.${chrom}.annot.gz
-    String annot_path = sub(annot_directory, "[/\\s]+$", "") + "/"
-    # Array[File] annot_files = glob
+    String annot_path
+    Array[File] annot_files = glob
 
     File frq_tar="gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_Phase3_frq.tgz"
     File weights_tar="gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_Phase3_weights_hm3_no_MHC.tgz"

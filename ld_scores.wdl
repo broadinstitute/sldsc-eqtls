@@ -36,6 +36,7 @@ task calculate_ldscore {
     File plink_bed=plink_path + "1000G.EUR.QC." + chrom + ".bed"
     File plink_bim=plink_path + "1000G.EUR.QC." + chrom + ".bim"
     File plink_fam=plink_path + "1000G.EUR.QC." + chrom + ".fam"
+    String bfile = sub(plink_fam, ".fam", "")
 
     File snps_file="gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/snplist.hm3.txt"
 
@@ -47,7 +48,7 @@ task calculate_ldscore {
     source activate ldsc
     python ${ldsc_path}/ldsc.py\
           --l2 \
-          --bfile ${plink_prefix}${chrom}\
+          --bfile ${bfile}\
           --ld-wind-cm 1\
           --annot ${annot_file}\
           --out snps.${chrom}\
