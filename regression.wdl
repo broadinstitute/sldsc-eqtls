@@ -1,25 +1,18 @@
 version 1.0
 # Calculate LD Scores
-# TODO add annot_prefix to be variable. add plink_prefix to be flexible
+# TODO add annot_prefix to be variable. add tar_prefix to be flexible
 
 workflow regressions {
   input {
     String annot_directory # annot_files should be called snps.${chrom}.annot.gz
-    String annot_path = sub(annot_directory, "[/\\s]+$", "") + "/"
-
-    String plink_directory
-    String plink_path = sub(plink_directory, "[/\\s]+$", "") + "/"
-
-    Array[String] chroms = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22"]
+    Array[String] gwas_names
   } 
 
-  scatter (chrom in chroms){
-    String annot_file="~{annot_path + 'snps.' + chrom + '.annot.gz'}"
-    call calculate_ldscore {
-        input:
-        annot_file=annot_file,
-        chrom=chrom,
-        plink_path=plink_path,
+  scatter (gwas_name in gwas_names){
+    call regression {
+      input:
+      annot_directory=annot_directory,
+      gwas_name=gwas_name,
     }
   }
 }

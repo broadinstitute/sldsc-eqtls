@@ -8,3 +8,12 @@ workflows:
           - main
         tags: 
           - /.*/
+
+   - name: "regression"
+     subclass: WDL
+     primaryDescriptorPath: /regression.wdl
+     filters: 
+        branches: 
+          - main
+        tags: 
+          - /.*/
