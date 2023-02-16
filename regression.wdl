@@ -8,13 +8,13 @@ workflow regressions {
     String annot_path = sub(annot_directory, "[/\\s]+$", "") + "/"
 
     String gwas_directory
-    String annot_path = sub(annot_directory, "[/\\s]+$", "") + "/"
+    String gwas_path = sub(annot_directory, "[/\\s]+$", "") + "/"
 
     Array[String] gwas_names
   } 
 
   scatter (gwas_name in gwas_names){
-    File gwas_sumstats_file = gwas_directory + gwas_name + ".sumstats.gz"
+    File gwas_sumstats_file = gwas_path + gwas_name + ".sumstats.gz"
     call regression {
       input:
       annot_path=annot_path,

@@ -36,7 +36,7 @@ task calculate_ldscore {
     File plink_bed=plink_path + "1000G.EUR.QC." + chrom + ".bed"
     File plink_bim=plink_path + "1000G.EUR.QC." + chrom + ".bim"
     File plink_fam=plink_path + "1000G.EUR.QC." + chrom + ".fam"
-    String bfile = sub(plink_fam, ".fam", "")
+    String bfile = sub(plink_path, "gs://", "/cromwell-root/")
 
     File snps_file="gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/snplist.hm3.txt"
 
