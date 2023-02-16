@@ -42,7 +42,7 @@ task calculate_ldscore {
     String annot_basename #=basename(annot_file, ".annot.gz")
     String chrom #=sub(annot_basename, "snps.", "")
 
-    File plink_path
+    File plink_path="gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_EUR_Phase3_plink/"
     String plink_prefix=plink_path + '1000G.EUR.QC.'
     File plink_bed="~{plink_prefix + chrom + '.bed'}"
     File plink_bim="~{plink_prefix + chrom + '.bim'}"
