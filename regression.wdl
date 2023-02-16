@@ -4,22 +4,18 @@ version 1.0
 
 workflow regressions {
   input {
-    String annot_directory # annot_files should be called snps.${chrom}.annot.gz
-    String annot_path = sub(annot_directory, "[/\\s]+$", "") + "/"
-
-    String gwas_directory
-    String gwas_path = sub(annot_directory, "[/\\s]+$", "") + "/"
-
-    Array[String] gwas_names
+    Array[File] annot_files # annot_files should be called snps.${chrom}.annot.gz
+    Array[File] gwas_sumstats_files
   } 
 
-  scatter (gwas_name in gwas_names){
-    File gwas_sumstats_file = gwas_path + gwas_name + ".sumstats.gz"
+  scatter (gwas_sumstats_file in gwas_sumstats_files){
+    String gwas_name = sub(basename(gwas_sumstats_file), ".sumstats.gz", "")
+    # File gwas_name = gwas_path + gwas_name + ".sumstats.gz"
     call regression {
       input:
-      annot_path=annot_path,
-      gwas_name=gwas_name,
+      annot_files=annot_files,
       gwas_sumstats_file=gwas_sumstats_file,
+      gwas_name=gwas_name,
     }
   }
 }
@@ -27,8 +23,8 @@ workflow regressions {
 
 task regression {
   input {
-    String annot_path
-    Array[File] annot_files = glob
+    Array[File] annot_files
+    File annot_file=select_first(annot_files)
 
     File frq_tar="gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_Phase3_frq.tgz"
     File weights_tar="gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_Phase3_weights_hm3_no_MHC.tgz"
@@ -47,9 +43,11 @@ task regression {
     tar -zxvf ${frq_tar} > frq
     tar -zxvf ${weights_tar} > weights
     tar -zxvf ${baseline_tar} > baseline
+    annot_base=$(echo "${annot_file}" | rev | cut -f 2- -d '.' | rev)
+
     python ${ldsc_path}/ldsc.py\
       --h2 ${gwas_sumstats_file}\
-      --ref-ld-chr ${annot_path}/snps.,baseline/baselineLD.\
+      --ref-ld-chr $annot_base,baseline/baselineLD.\
       --overlap-annot\
       --frqfile-chr frq/1000G.EUR.QC.\
       --w-ld-chr weights/weights.hm3_noMHC.\
