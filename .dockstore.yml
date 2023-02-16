@@ -2,7 +2,7 @@ version: 1.2
 workflows:
    - name: "calculate_ldscores"
      subclass: WDL
-     primaryDescriptorPath: /tasks/ld_scores.wdl
+     primaryDescriptorPath: /ld_scores.wdl
      filters: 
         branches: 
           - main
