@@ -9,12 +9,17 @@ workflow calculate_ldscores {
     Array[Int] chroms = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]
     # Array[File] annot_files # ex. snps.${i}.annot.gz 
     # String annot_prefix="snps"
-  }
+  } # String greeting2 = "~{salutation + ' ' + name2 + ', '}nice to meet you!"
+
   scatter (chrom in chroms){
-      call calculate_ldscore {
-          input:
-              annot_file=annot_path + "snps." + "~{chrom}" + ".annot.gz"
-      }
+    String annot_file="~{annot_path + 'snps.' + chrom}" + '.annot.gz'
+    # File annot_file=annot_path+'.annot.gz'
+    call calculate_ldscore {
+        input:
+        annot_file=annot_file,
+        annot_basename="snps.", 
+        chrom='~{chrom}'
+    }
   }
 }
   # output {
@@ -29,8 +34,8 @@ task calculate_ldscore {
   input {
     
     File annot_file 
-    String annot_basename=basename(annot_file, ".annot.gz")
-    String chrom=sub(annot_basename, "snps.", "")
+    String annot_basename #=basename(annot_file, ".annot.gz")
+    String chrom #=sub(annot_basename, "snps.", "")
 
     File plink_zip="https://storage.googleapis.com/broad-alkesgroup-public/LDSCORE/1000G_Phase3_plinkfiles.tgz"
     # String plink_path='1000G_EUR_Phase3_plink'
