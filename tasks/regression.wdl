@@ -27,20 +27,16 @@ workflow regressions {
 
 task regression {
   input {
-    
-    File annot_file 
-    String chrom="1" #=sub(annot_basename, "snps.", "")
+    String annot_directory # annot_files should be called snps.${chrom}.annot.gz
+    String annot_path = sub(annot_directory, "[/\\s]+$", "") + "/"
+    # Array[File] annot_files = glob
 
-    String plink_path="gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_EUR_Phase3_plink/"
-    String plink_prefix=plink_path + '1000G.EUR.QC.'
-    File plink_bed="~{plink_prefix + chrom + '.bed'}"
-    File plink_bim="~{plink_prefix + chrom + '.bim'}"
-    File plink_fam="~{plink_prefix + chrom + '.fam'}"
-    File snps_file="gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/snplist.hm3.txt"
+    File frq_tar="gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_Phase3_frq.tgz"
+    File weights_tar="gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_Phase3_weights_hm3_no_MHC.tgz"
+    File baseline_tar="gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_Phase3_baselineLD_v2.2_ldscores.tgz"
 
-    File frq_tar=
-    File weights_tar=
-    File baseline_tar=
+    String gwas_name
+    File gwas_sumstats_file = gwas_name + ".sumstats.gz"
 
     String docker_image='docker.io/lifebitai/ldsc-pipe:latest'
     String ldsc_path='/ldsc'
@@ -48,13 +44,17 @@ task regression {
   command {
     set -euo pipefail
     source activate ldsc
+    mkdir frq weights baseline
+    tar -zxvf ${frq_tar} > frq
+    tar -zxvf ${weights_tar} > weights
+    tar -zxvf ${baseline_tar} > baseline
     python ${ldsc_path}/ldsc.py\
-      --h2 ${sumstats_path}/${i}.sumstats.gz\
-      --ref-ld-chr ${annot_path}/snps.,${baseline_path}\
+      --h2 ${gwas_sumstats_file}\
+      --ref-ld-chr ${annot_path}/snps.,baseline/baselineLD.\
       --overlap-annot\
-      --frqfile-chr ${frq_path}\
-      --w-ld-chr ${weight_path}\
-      --out ${reg_path}/${i}\
+      --frqfile-chr frq/1000G.EUR.QC.\
+      --w-ld-chr weights/weights.hm3_noMHC.\
+      --out ${gwas_name}\
       --print-coefficients\
       & # parallelize
   }

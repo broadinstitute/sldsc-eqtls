@@ -33,7 +33,8 @@ task calculate_ldscore {
 
     String plink_path="gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_EUR_Phase3_plink/"
     String plink_prefix=plink_path + '1000G.EUR.QC.'
-    File plink_bed=select_first(["~{plink_prefix + chrom + '.bed'}","gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_EUR_Phase3_plink/1000G.EUR.QC.1.bed"])
+    File plink_bed=plink_path + "1000G.EUR.QC" + chrom + ".bed"
+    # File plink_bed=select_first(["~{plink_prefix + chrom + '.bed'}","gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_EUR_Phase3_plink/1000G.EUR.QC.1.bed"])
     File plink_bim=select_first(["~{plink_prefix + chrom + '.bim'}","gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_EUR_Phase3_plink/1000G.EUR.QC.1.bim"])
     File plink_fam=select_first(["~{plink_prefix + chrom + '.fam'}","gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_EUR_Phase3_plink/1000G.EUR.QC.1.fam"])
     File snps_file="gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/snplist.hm3.txt"
