@@ -43,10 +43,9 @@ task regression {
   command {
     set -euo pipefail
     source activate ldsc
-    mkdir frq weights baseline
-    tar -zxvf ${frq_tar} --directory frq/
-    tar -zxvf ${weights_tar} --directory weights/
-    tar -zxvf ${baseline_tar} --directory baseline/
+    tar -zxvf ${frq_tar}
+    tar -zxvf ${weights_tar}
+    tar -zxvf ${baseline_tar}
     frq_path=$(dirname "${frq_tar}")/1000G_Phase3_frq
     weights_path=$(dirname "${weights_tar}")/1000G_Phase3_weights_hm3_no_MHC
     baseline_path=$(dirname "${baseline_tar}")
