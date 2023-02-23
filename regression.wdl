@@ -44,9 +44,9 @@ task regression {
     set -euo pipefail
     source activate ldsc
     mkdir frq weights baseline
-    tar -zxvf ${frq_tar} > frq
-    tar -zxvf ${weights_tar} > weights
-    tar -zxvf ${baseline_tar} > baseline
+    tar -zxvf ${frq_tar} --directory frq/
+    tar -zxvf ${weights_tar} --directory weights/
+    tar -zxvf ${baseline_tar} --directory baseline/
     annot_base=$(echo "${annot_file}" | rev | cut -f 2- -d '.' | rev)
 
     python ${ldsc_path}/ldsc.py\
