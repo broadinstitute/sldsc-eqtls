@@ -47,14 +47,17 @@ task regression {
     tar -zxvf ${frq_tar} --directory frq/
     tar -zxvf ${weights_tar} --directory weights/
     tar -zxvf ${baseline_tar} --directory baseline/
+    frq_path=$(dirname "${frq_tar}")/1000G_Phase3_frq
+    weights_path=$(dirname "${weights_tar}")/1000G_Phase3_weights_hm3_no_MHC
+    baseline_path=$(dirname "${baseline_tar}")
     annot_base=$(echo "${annot_file}" | rev | cut -f 2- -d '.' | rev)
 
     python ${ldsc_path}/ldsc.py\
       --h2 ${gwas_sumstats_file}\
-      --ref-ld-chr $annot_base,baseline/baselineLD.\
+      --ref-ld-chr $annot_base,$baseline_path/baselineLD.\
       --overlap-annot\
-      --frqfile-chr frq/1000G_Phase3_frq/1000G.EUR.QC.\
-      --w-ld-chr weights/1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.\
+      --frqfile-chr $frq_path/1000G.EUR.QC.\
+      --w-ld-chr $weights_path/weights.hm3_noMHC.\
       --out ${gwas_name}\
       --print-coefficients\
       & # parallelize
