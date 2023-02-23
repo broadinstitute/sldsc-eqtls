@@ -5,15 +5,16 @@ version 1.0
 workflow calculate_ldscores {
   input {
     String annot_directory # annot_files should be called snps.${chrom}.annot.gz
-    String annot_path = sub(annot_directory, "[/\\s]+$", "") + "/"
-
     String plink_directory
-    String plink_path = sub(plink_directory, "[/\\s]+$", "") + "/"
-
+    
     Array[String] chroms = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22"]
   } 
 
   scatter (chrom in chroms){
+    # add slash if needed
+    String annot_path = sub(annot_directory, "[/\\s]+$", "") + "/" 
+    String plink_path = sub(plink_directory, "[/\\s]+$", "") + "/" 
+    # annot file per chrom
     String annot_file="~{annot_path + 'snps.' + chrom + '.annot.gz'}"
     call calculate_ldscore {
         input:
@@ -21,6 +22,14 @@ workflow calculate_ldscores {
         chrom=chrom,
         plink_path=plink_path,
     }
+  }
+
+  output {
+    Array[File] ldscore_files = calculate_ldscore.ldscore_file
+    Array[File] m_files = calculate_ldscore.m_file
+    Array[File] m_5_50_files = calculate_ldscore.m_5_50_file
+    Array[File] log_files = calculate_ldscore.log_file
+
   }
 }
 
