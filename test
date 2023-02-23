@@ -1,0 +1,62 @@
+#!/bin/bash
+
+cd /cromwell_root
+tmpDir=$(mkdir -p "/cromwell_root/tmp.35bdf8a6" && echo "/cromwell_root/tmp.35bdf8a6")
+chmod 777 "$tmpDir"
+export _JAVA_OPTIONS=-Djava.io.tmpdir="$tmpDir"
+export TMPDIR="$tmpDir"
+export HOME="$HOME"
+(
+cd /cromwell_root
+
+)
+outba9dc71c="${tmpDir}/out.$$" errba9dc71c="${tmpDir}/err.$$"
+mkfifo "$outba9dc71c" "$errba9dc71c"
+trap 'rm "$outba9dc71c" "$errba9dc71c"' EXIT
+touch '/cromwell_root/stdout' '/cromwell_root/stderr'
+tee '/cromwell_root/stdout' < "$outba9dc71c" &
+tee '/cromwell_root/stderr' < "$errba9dc71c" >&2 &
+(
+cd /cromwell_root
+
+
+set -euo pipefail
+source activate ldsc
+tar -zxvf /cromwell_root/landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_Phase3_frq.tgz
+tar -zxvf /cromwell_root/landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_Phase3_weights_hm3_no_MHC.tgz
+tar -zxvf /cromwell_root/landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_Phase3_baselineLD_v2.2_ldscores.tgz
+# frq_path=$(dirname "/cromwell_root/landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_Phase3_frq.tgz")/1000G_Phase3_frq
+# weights_path=$(dirname "/cromwell_root/landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_Phase3_weights_hm3_no_MHC.tgz")/1000G_Phase3_weights_hm3_no_MHC
+# baseline_path=$(dirname "/cromwell_root/landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_Phase3_baselineLD_v2.2_ldscores.tgz")
+annot_base=$(echo "/cromwell_root/landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/20230209_hep_D2_fm_eQTLs/annot_ld_score_files/snps.22.annot.gz" | rev | cut -f 2- -d '.' | rev)
+
+python /ldsc/ldsc.py\
+  --h2 /cromwell_root/landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/gwas_sumstats/ALP.sumstats.gz\
+  --ref-ld-chr $annot_base,baselineLD.\
+  --overlap-annot\
+  --frqfile-chr 1000G_Phase3_frq/1000G.EUR.QC.\
+  --w-ld-chr 1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.\
+  --out ALP\
+  --print-coefficients\
+# python /ldsc/ldsc.py\
+#   --h2 /cromwell_root/landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/gwas_sumstats/ALP.sumstats.gz\
+#   --ref-ld-chr $annot_base,$baseline_path/baselineLD.\
+#   --overlap-annot\
+#   --frqfile-chr $frq_path/1000G.EUR.QC.\
+#   --w-ld-chr $weights_path/weights.hm3_noMHC.\
+#   --out ALP\
+#   --print-coefficients\
+)  > "$outba9dc71c" 2> "$errba9dc71c"
+echo $? > /cromwell_root/rc.tmp
+(
+# add a .file in every empty directory to facilitate directory delocalization on the cloud
+cd /cromwell_root
+find . -type d -exec sh -c '[ -z "$(ls -A '"'"'{}'"'"')" ] && touch '"'"'{}'"'"'/.file' \;
+)
+(
+cd /cromwell_root
+sync
+
+
+)
+mv /cromwell_root/rc.tmp /cromwell_root/rc

@@ -41,14 +41,11 @@ task regression {
     String ldsc_path='/ldsc'
   }
   command {
-    set -euo pipefail
+    set -e
     source activate ldsc
     tar -zxvf ${frq_tar}
     tar -zxvf ${weights_tar}
     tar -zxvf ${baseline_tar}
-    # frq_path=$(dirname "${frq_tar}")/1000G_Phase3_frq
-    # weights_path=$(dirname "${weights_tar}")/1000G_Phase3_weights_hm3_no_MHC
-    # baseline_path=$(dirname "${baseline_tar}")
     annot_base=$(echo "${annot_file}" | rev | cut -f 2- -d '.' | rev)
 
     python ${ldsc_path}/ldsc.py\
@@ -59,14 +56,6 @@ task regression {
       --w-ld-chr 1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.\
       --out ${gwas_name}\
       --print-coefficients\
-    # python ${ldsc_path}/ldsc.py\
-    #   --h2 ${gwas_sumstats_file}\
-    #   --ref-ld-chr $annot_base,$baseline_path/baselineLD.\
-    #   --overlap-annot\
-    #   --frqfile-chr $frq_path/1000G.EUR.QC.\
-    #   --w-ld-chr $weights_path/weights.hm3_noMHC.\
-    #   --out ${gwas_name}\
-    #   --print-coefficients\
   }
 
   runtime {
