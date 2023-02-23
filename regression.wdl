@@ -1,6 +1,5 @@
 version 1.0
-# Calculate LD Scores
-# TODO add annot_prefix to be variable. add tar_prefix to be flexible
+# Calculate s-ldsc regression
 
 workflow regressions {
   input {
@@ -17,6 +16,11 @@ workflow regressions {
       gwas_sumstats_file=gwas_sumstats_file,
       gwas_name=gwas_name,
     }
+  }
+  output {
+    Array[File] regression_files = regression.regression_file
+    Array[File] log_files = regression.log_file
+
   }
 }
 

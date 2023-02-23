@@ -25,6 +25,7 @@ workflow calculate_ldscores {
   }
 
   output {
+    Array[File] annot_files=calculate_ldscore.annot_file_out
     Array[File] ldscore_files = calculate_ldscore.ldscore_file
     Array[File] m_files = calculate_ldscore.m_file
     Array[File] m_5_50_files = calculate_ldscore.m_5_50_file
@@ -69,6 +70,7 @@ task calculate_ldscore {
   }
 
   output {
+    File annot_file_out=annot_file #"${annot_file}" # hacky way to get annot files to list as array in scatter
     File ldscore_file="snps.${chrom}.l2.ldscore.gz"
     File m_file="snps.${chrom}.l2.M"
     File m_5_50_file="snps.${chrom}.l2.M_5_50"
