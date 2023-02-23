@@ -6,6 +6,7 @@ workflows:
      filters: 
         branches: 
           - main
+          - dev
         tags: 
           - /.*/
 
@@ -15,5 +16,6 @@ workflows:
      filters: 
         branches: 
           - main
+          - dev
         tags: 
           - /.*/
