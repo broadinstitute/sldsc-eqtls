@@ -53,8 +53,8 @@ task regression {
       --h2 ${gwas_sumstats_file}\
       --ref-ld-chr $annot_base,baseline/baselineLD.\
       --overlap-annot\
-      --frqfile-chr frq/1000G.EUR.QC.\
-      --w-ld-chr weights/weights.hm3_noMHC.\
+      --frqfile-chr frq/1000G_Phase3_frq/1000G.EUR.QC.\
+      --w-ld-chr weights/1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.\
       --out ${gwas_name}\
       --print-coefficients\
       & # parallelize
