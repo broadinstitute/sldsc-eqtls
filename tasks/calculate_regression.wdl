@@ -19,6 +19,12 @@ task regression {
 
     String docker_image='docker.io/lifebitai/ldsc-pipe:latest'
     String ldsc_path='/ldsc'
+
+    Int memory=128
+    Int disk_space=128
+    Int num_threads=8
+    Int num_preempt=0
+
   }
   command {
     set -e
@@ -40,6 +46,10 @@ task regression {
 
   runtime {
     docker: docker_image
+    memory: "${memory}GB"
+    disks: "local-disk ${disk_space} HDD"
+    cpu: "${num_threads}"
+    preemptible: "${num_preempt}"
   }
 
   output {
