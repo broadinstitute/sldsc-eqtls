@@ -30,6 +30,10 @@ task regression {
     Array[File] annot_files
     File annot_file=select_first(annot_files)
 
+    Array[File] ldscore_files
+    Array[File] m_files
+    Array[File] m_5_50_files
+
     File frq_tar="gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_Phase3_frq.tgz"
     File weights_tar="gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_Phase3_weights_hm3_no_MHC.tgz"
     File baseline_tar="gs://landerlab-20220124-ssong-village-eqtls/2023_02_16_ldsc/1000G_Phase3_baselineLD_v2.2_ldscores.tgz"
