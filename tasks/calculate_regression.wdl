@@ -30,7 +30,7 @@ task regression {
 
     python ${ldsc_path}/ldsc.py\
       --h2 ${gwas_sumstats_file}\
-      --ref-ld-chr $annot_base,baselineLD.\
+      --ref-ld-chr $annot_base.,baselineLD.\
       --overlap-annot\
       --frqfile-chr 1000G_Phase3_frq/1000G.EUR.QC.\
       --w-ld-chr 1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.\
