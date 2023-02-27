@@ -20,7 +20,7 @@ task regression {
     String docker_image='docker.io/lifebitai/ldsc-pipe:latest'
     String ldsc_path='/ldsc'
 
-    Int memory=128
+    Int memory=256
     Int disk_space=128
     Int num_threads=8
     Int num_preempt=0

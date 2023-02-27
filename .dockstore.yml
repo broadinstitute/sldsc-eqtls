@@ -1,6 +1,16 @@
 version: 1.2
 workflows:
 
+   - name: "sldsc"
+     subclass: WDL
+     primaryDescriptorPath: /sldsc.wdl
+     filters: 
+        branches: 
+          - main
+          - dev
+        tags: 
+          - /.*/
+
    - name: "calculate_ldscores"
      subclass: WDL
      primaryDescriptorPath: /ld_scores.wdl
