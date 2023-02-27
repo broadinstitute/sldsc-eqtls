@@ -1,7 +1,7 @@
 version 1.0
 # Calculate LD Scores
-import "../tasks/calculate_ldscore.wdl" as task_calculate_ldscore
-import "../tasks/copy_to_google_bucket.wdl" as copy2bucket
+import "tasks/calculate_ldscore.wdl" as task_calculate_ldscore
+import "tasks/copy_to_google_bucket.wdl" as copy2bucket
 
 workflow calculate_ldscores {
   input {
