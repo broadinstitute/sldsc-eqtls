@@ -31,29 +31,23 @@ workflow calculate_ldscores {
 
   call copy2bucket.CopyFiles2Directory as copy_1 {
     input: 
-      files_2_copy=calculate_ldscore.annot_file_out,
+      files_2_copy=calculate_ldscore.m_5_50_file,
       output_gs_dir=output_gs_dir,
       dir_name=dir_name,
   }
   call copy2bucket.CopyFiles2Directory as copy_2 {
     input: 
-      files_2_copy=calculate_ldscore.m_5_50_file,
+      files_2_copy=calculate_ldscore.m_file,
       output_gs_dir=output_gs_dir,
       dir_name=dir_name,
   }
   call copy2bucket.CopyFiles2Directory as copy_3 {
     input: 
-      files_2_copy=calculate_ldscore.m_file,
-      output_gs_dir=output_gs_dir,
-      dir_name=dir_name,
-  }
-  call copy2bucket.CopyFiles2Directory as copy_4 {
-    input: 
       files_2_copy=calculate_ldscore.m_5_50_file,
       output_gs_dir=output_gs_dir,
       dir_name=dir_name,
   }
-  call copy2bucket.CopyFiles2Directory as copy_5 {
+  call copy2bucket.CopyFiles2Directory as copy_4 {
     input: 
       files_2_copy=calculate_ldscore.log_file,
       output_gs_dir=output_gs_dir,
