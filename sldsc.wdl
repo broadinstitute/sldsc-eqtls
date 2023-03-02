@@ -24,7 +24,7 @@ workflow full_sldsc {
   # Calculate regressions
   call wf_regressions.regressions as regressions {
     input:
-    annot_files=ldscores.new_annot_file_paths,
+    annot_files=ldscores.annot_files,
     gwas_sumstats_files=gwas_sumstats_files,
     ldscore_files=ldscores.new_ldscore_file_paths,
     m_files=ldscores.new_m_file_paths,

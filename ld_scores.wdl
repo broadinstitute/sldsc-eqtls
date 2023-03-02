@@ -28,12 +28,12 @@ workflow calculate_ldscores {
         plink_path=plink_path,
     }
   }
-  call copy2bucket.CopyFiles2Directory as copy_0 {
-    input: 
-      files_2_copy=calculate_ldscore.annot_file_out,
-      output_gs_dir=output_gs_dir,
-      dir_name=dir_name,
-  }
+  # call copy2bucket.CopyFiles2Directory as copy_0 {
+  #   input: 
+  #     files_2_copy=calculate_ldscore.annot_file_out,
+  #     output_gs_dir=output_gs_dir,
+  #     dir_name=dir_name,
+  # }
   call copy2bucket.CopyFiles2Directory as copy_1 {
     input: 
       files_2_copy=calculate_ldscore.ldscore_file,
@@ -66,7 +66,7 @@ workflow calculate_ldscores {
     Array[File] m_5_50_files = calculate_ldscore.m_5_50_file
     Array[File] log_files = calculate_ldscore.log_file
 
-    Array[File] new_annot_file_paths = copy_0.new_file_paths
+    # Array[File] new_annot_file_paths = copy_0.new_file_paths
     Array[File] new_ldscore_file_paths = copy_1.new_file_paths
     Array[File] new_m_file_paths = copy_2.new_file_paths
     Array[File] new_m_5_50_file_paths = copy_3.new_file_paths
